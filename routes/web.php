@@ -1,67 +1,46 @@
 <?php
 
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\SaleController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\UserController; // Customer management
-use App\Http\Controllers\Admin\NoteController;
-use App\Http\Controllers\Admin\SaleItemController;
-use App\Http\Controllers\Admin\ProductAvailabilityController;
+use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\DepartmentController;
+use App\Http\Controllers\SkillController;
 
 /*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
 */
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-// 🔹 Admin routes
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
-    // Customer (Users) resource routes
-    Route::resource('customers', UserController::class)->names('customers');
+Route::middleware('auth')->group(function () {
 
-    // Product Start------------------------------------
-    Route::resource('products', ProductController::class)->names('products');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // AJAX note store
-    Route::post('products/{product}/notes', [ProductController::class, 'storeNote'])
-        ->name('products.notes.store');
+    Route::get('/ajax/check-email', [EmployeeController::class, 'checkEmail'])
+        ->name('employees.checkEmail')
+        ->middleware('auth');
 
-    // Product End------------------------------------
+    Route::resource('employees', EmployeeController::class);
+    Route::resource('departments', DepartmentController::class)->only(['index', 'create', 'store']);
+    Route::resource('skills', SkillController::class)->only(['index', 'create', 'store']);
 
-    // Route::post('notes', [NoteController::class, 'store'])->name('admin.notes.store');
-
-    // Sales Start -----------------------------------------------
-    Route::resource('sales', SaleController::class)->names('sales');
-    Route::get('sales-trash', [SaleController::class, 'trash'])->name('sales.trash');
-    Route::post('sales/{id}/restore', [SaleController::class, 'restore'])->name('sales.restore');
-    Route::post('sales/notes', [SaleController::class, 'storeNote'])->name('sales.notes.store');
-
-    // Sales End -----------------------------------------------
-
-    // Sales Item Start---------------------------------------------
-
-    Route::post('sales/items/{id}/soft-delete', [SaleItemController::class, 'softDeleteItem'])->name('admin.sales.items.soft-delete');
-
-    Route::patch('sale-items/{id}/restore', [SaleItemController::class, 'restore'])->name('sale-items.restore');
-
-    // Sales Item End---------------------------------------------
-
-
-    // ProductAvailability Start
-
-    Route::get('availabilities', [ProductAvailabilityController::class, 'index'])
-        ->name('product_availability.index');
-
-    Route::post('availabilities/{productId}/add', [ProductAvailabilityController::class, 'addStock'])
-        ->name('product_availability.addStock');
-
-    Route::post('availabilities/{productId}/subtract', [ProductAvailabilityController::class, 'subtractStock'])
-        ->name('product_availability.subtractStock');
-
-    //  ProductAvailability End
+    Route::get('employees-filter', [EmployeeController::class, 'filterByDepartment'])
+        ->name('employees.filter');
 });
+
+require __DIR__ . '/auth.php';

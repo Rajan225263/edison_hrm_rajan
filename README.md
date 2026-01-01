@@ -1,4 +1,4 @@
-# Sales Module - ITWay
+# HRM Module - Momagic Bangladesh Ltd. (A concern of Edison Group)
 
 This is a Laravel 10 project for Sales Management Module.
 
@@ -16,8 +16,8 @@ This is a Laravel 10 project for Sales Management Module.
 
 1. Clone the repository:
 
-git clone https://github.com/Rajan225263/sales_module_itway.git
-cd sales_module_itway
+git clone https://github.com/Rajan225263/edison_hrm_rajan.git
+cd edison_hrm_rajan
 Install dependencies:
 
 composer install
@@ -30,10 +30,6 @@ php artisan key:generate
 
 Run migrations:
 php artisan migrate
-Seed the database with sample data:
-
-
-php artisan db:seed
 
 Start the development server:
 
