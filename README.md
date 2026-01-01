@@ -1,6 +1,6 @@
 # HRM Module - Momagic Bangladesh Ltd. (A concern of Edison Group)
 
-This is a Laravel 10 project for Sales Management Module.
+This is a Laravel 10 project for HRM Management Module.
 
 ---
 
